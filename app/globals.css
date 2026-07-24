@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+/* Design tokens — pulled straight from StoreA.dc.html ("Cálido Clásico") */
+@theme {
+  --color-navy: #0a2a78;
+  --color-brand-red: #cc1830;
+  --color-brand-yellow: #fccc30;
+  --color-gold: #b8901a;
+  --color-cream: #fbf6ec;
+  --color-cream-soft: #fff9ec;
+  --color-warm-border: #eee3cd;
+  --color-line: #f3ecdc;
+  --color-slot: #f3ecdc;
+  --color-stepper: #ddd2b8;
+  --color-ink: #1b2340;
+  --color-muted: #7a7160;
+  --color-whatsapp: #25d366;
+  --color-added: #2fa84f;
+}
+
+/* next/font vars (defined on <html>) exposed as Tailwind font utilities */
+@theme inline {
+  --font-heading: var(--font-baloo);
+  --font-body: var(--font-mulish);
+}
+
+/* Base styles go in the `base` layer so Tailwind utilities (in the later
+   `utilities` layer) always win — e.g. `text-white` on a <Link>/<a>. */
+@layer base {
+  body {
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-mulish), "Mulish", sans-serif;
+  }
+
+  a {
+    color: #0a2a78;
+  }
+  a:hover {
+    color: #cc1830;
+  }
+}
