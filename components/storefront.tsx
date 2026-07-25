@@ -10,6 +10,7 @@ import {
   cartDiscountTotal,
   cartLines,
   cartTotal,
+  formatPrice,
   matchesQuery,
   productSearchText,
   qtyStep,
@@ -24,7 +25,7 @@ import { ProductCard } from "./product-card";
 import { AboutSection } from "./about-section";
 import { SiteFooter } from "./site-footer";
 import { CartDrawer } from "./cart-drawer";
-import { WhatsappIcon } from "./icons";
+import { CartIcon } from "./icons";
 
 export function Storefront({
   products,
@@ -276,18 +277,22 @@ export function Storefront({
       <AboutSection imageUrl={aboutImageUrl} />
       <SiteFooter />
 
-      {/* Acceso rápido a WhatsApp */}
-      <a
-        href={`https://wa.me/${WHATSAPP_DESTINATIONS[0].number}?text=${encodeURIComponent(
-          "Hola Surtifronteras, quiero hacer una consulta (venta al mayor).",
-        )}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Escribir por WhatsApp"
-        className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-whatsapp text-white shadow-[0_8px_24px_rgba(37,211,102,0.45)] transition-transform hover:scale-105"
-      >
-        <WhatsappIcon className="h-7 w-7" />
-      </a>
+      {/* Botón flotante de carrito: se ve cuánto y qué llevás sin subir arriba */}
+      {count > 0 && (
+        <button
+          onClick={toggleCart}
+          aria-label={`Ver carrito · ${count} productos · ${formatPrice(total)}`}
+          className="fixed bottom-5 right-5 z-40 flex items-center gap-2.5 rounded-full bg-navy py-3 pl-4 pr-5 text-white shadow-[0_8px_24px_rgba(10,42,120,0.35)] transition-transform hover:scale-105"
+        >
+          <span className="relative flex items-center">
+            <CartIcon className="h-6 w-6" />
+            <span className="absolute -right-2.5 -top-2.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-yellow px-1 text-[11px] font-extrabold text-navy">
+              {count}
+            </span>
+          </span>
+          <span className="text-[14.5px] font-extrabold">{formatPrice(total)}</span>
+        </button>
+      )}
 
       <CartDrawer
         open={cartOpen}

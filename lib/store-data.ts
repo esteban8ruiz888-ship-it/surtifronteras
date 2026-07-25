@@ -14,15 +14,8 @@ export interface WhatsAppDestination {
   flag: string;
 }
 
-// Los dos números que reciben pedidos, uno por país.
+// Número que recibe los pedidos.
 export const WHATSAPP_DESTINATIONS: WhatsAppDestination[] = [
-  {
-    id: "co",
-    label: "Colombia",
-    number: "573112020366",
-    displayNumber: "+57 311 2020366",
-    flag: "🇨🇴",
-  },
   {
     id: "ve",
     label: "Venezuela",
