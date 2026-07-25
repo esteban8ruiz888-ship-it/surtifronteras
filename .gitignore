@@ -39,6 +39,9 @@ yarn-error.log*
 # herramientas de agentes (estado local, no es código del proyecto)
 .atl/
 
+# paquete de carga masiva del catálogo (75 MB de fotos, no es código del proyecto)
+/surti-import/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
