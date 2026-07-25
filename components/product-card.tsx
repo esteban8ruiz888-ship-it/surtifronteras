@@ -85,7 +85,9 @@ export function ProductCard({
         {meta && <span className="text-[12.5px] text-muted">{meta}</span>}
         <span className="font-heading mt-0.5 text-[19px] font-bold text-brand-red">
           {formatPrice(product.price)}
-          <span className="ml-1 text-[11px] font-semibold text-muted">/ caja</span>
+          <span className="ml-1 text-[11px] font-semibold text-muted">
+            / caja{product.unitsPerBox != null ? ` de ${product.unitsPerBox}` : ""}
+          </span>
         </span>
 
         {addable ? (
