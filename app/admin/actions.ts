@@ -49,7 +49,8 @@ export async function changePasswordAction(
   _prev: ChangePasswordState,
   formData: FormData,
 ): Promise<ChangePasswordState> {
-  await requireAuth();
+  // No exige sesión: el candado es la contraseña actual (se verifica abajo),
+  // así también se puede cambiar desde la pantalla de login.
   if (!isDbConfigured()) {
     return {
       error:
