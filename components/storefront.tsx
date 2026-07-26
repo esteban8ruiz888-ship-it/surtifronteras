@@ -194,7 +194,7 @@ export function Storefront({
   };
 
   const gridCls =
-    "grid grid-cols-[repeat(auto-fill,minmax(215px,1fr))] gap-4 sm:gap-[22px]";
+    "grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(215px,1fr))] sm:gap-[22px]";
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-cream font-body text-ink">
