@@ -39,16 +39,8 @@ export function Storefront({
   const [qtyDraft, setQtyDraft] = useState<Record<number, number>>({});
   const [cart, setCart] = useState<Record<number, number>>({});
   const [cartOpen, setCartOpen] = useState(false);
-  const [justAddedId, setJustAddedId] = useState<number | null>(null);
 
   const catalogRef = useRef<HTMLElement | null>(null);
-  const addTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (addTimer.current) clearTimeout(addTimer.current);
-    };
-  }, []);
 
   useEffect(() => {
     document.body.style.overflow = cartOpen ? "hidden" : "";
@@ -85,9 +77,6 @@ export function Storefront({
       const qty = qtyDraft[id] || 1;
       setCart((c) => ({ ...c, [id]: roundToStep(p, (c[id] || 0) + qty) }));
       setQtyDraft((s) => ({ ...s, [id]: 1 }));
-      setJustAddedId(id);
-      if (addTimer.current) clearTimeout(addTimer.current);
-      addTimer.current = setTimeout(() => setJustAddedId(null), 1100);
     },
     [productMap, qtyDraft],
   );
@@ -185,7 +174,7 @@ export function Storefront({
         categoryLabel={categoryLabel(p.category)}
         categoryColor={CATEGORY_COLOR[p.category]}
         qty={draft}
-        justAdded={justAddedId === p.id}
+        inCart={(cart[p.id] || 0) > 0}
         onDec={() => setQty(p.id, draft - qtyStep(p))}
         onInc={() => setQty(p.id, draft + qtyStep(p))}
         onAdd={() => addToCart(p.id)}

@@ -15,7 +15,7 @@ export function ProductCard({
   categoryLabel,
   categoryColor,
   qty,
-  justAdded,
+  inCart,
   onInc,
   onDec,
   onAdd,
@@ -24,7 +24,7 @@ export function ProductCard({
   categoryLabel: string;
   categoryColor: string;
   qty: number;
-  justAdded: boolean;
+  inCart: boolean;
   onInc: () => void;
   onDec: () => void;
   onAdd: () => void;
@@ -119,10 +119,10 @@ export function ProductCard({
             <button
               onClick={onAdd}
               className={`mt-1.5 w-full cursor-pointer rounded-[12px] px-3 py-[11px] text-[13.5px] font-extrabold text-white transition-colors duration-200 ${
-                justAdded ? "bg-added" : "bg-navy"
+                inCart ? "bg-added" : "bg-navy"
               }`}
             >
-              {justAdded ? "¡Añadido! ✓" : "Añadir al carrito"}
+              {inCart ? "En el carrito ✓" : "Añadir al carrito"}
             </button>
           </>
         ) : (
