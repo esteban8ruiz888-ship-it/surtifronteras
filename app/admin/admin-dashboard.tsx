@@ -4,6 +4,7 @@ import { type Product } from "@/lib/store-data";
 import { logoutAction } from "./actions";
 import { AboutImageEditor } from "./about-image-editor";
 import { PresentationsEditor } from "./presentations-editor";
+import { ChangePassword } from "./change-password";
 import { AdminProductList } from "./admin-product-list";
 
 export function AdminDashboard({
@@ -65,6 +66,7 @@ export function AdminDashboard({
 
       <AboutImageEditor imageUrl={aboutImageUrl} />
       <PresentationsEditor initial={presentations} />
+      <ChangePassword />
 
       <AdminProductList products={products} />
     </div>

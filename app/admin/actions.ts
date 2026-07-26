@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import {
   createSession,
   destroySession,
+  hashPassword,
   isAuthConfigured,
   requireAuth,
   verifyPassword,
@@ -14,6 +15,7 @@ import {
   deleteProduct,
   isDbConfigured,
   setAboutImageUrl,
+  setAdminPasswordHash,
   setPresentations,
   updateProduct,
   type ProductInput,
@@ -34,11 +36,50 @@ export async function loginAction(
     };
   }
   const password = String(formData.get("password") ?? "");
-  if (!verifyPassword(password)) {
+  if (!(await verifyPassword(password))) {
     return { error: "Contraseña incorrecta." };
   }
   await createSession();
   redirect("/admin");
+}
+
+export type ChangePasswordState = { ok?: boolean; error?: string };
+
+export async function changePasswordAction(
+  _prev: ChangePasswordState,
+  formData: FormData,
+): Promise<ChangePasswordState> {
+  await requireAuth();
+  if (!isDbConfigured()) {
+    return {
+      error:
+        "La base de datos no está conectada, no se puede guardar la contraseña.",
+    };
+  }
+  const current = String(formData.get("current") ?? "");
+  const next = String(formData.get("next") ?? "");
+  const confirm = String(formData.get("confirm") ?? "");
+
+  if (!(await verifyPassword(current))) {
+    return { error: "La contraseña actual no es correcta." };
+  }
+  if (next.length < 6) {
+    return { error: "La nueva contraseña debe tener al menos 6 caracteres." };
+  }
+  if (next !== confirm) {
+    return { error: "La nueva contraseña y su confirmación no coinciden." };
+  }
+  if (next === current) {
+    return { error: "La nueva contraseña debe ser distinta de la actual." };
+  }
+  try {
+    await setAdminPasswordHash(hashPassword(next));
+  } catch (e) {
+    return {
+      error: "No se pudo cambiar la contraseña: " + (e as Error).message,
+    };
+  }
+  return { ok: true };
 }
 
 export async function logoutAction(): Promise<void> {

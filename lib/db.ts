@@ -279,3 +279,15 @@ export async function setPresentations(list: string[]): Promise<void> {
   );
   await setSetting(PRESENTATIONS_KEY, JSON.stringify(clean));
 }
+
+// --- Contraseña del admin (hash guardado en settings) ---
+const ADMIN_PASSWORD_HASH_KEY = "admin_password_hash";
+
+/** Hash de la contraseña del admin, o null si nunca se cambió desde el panel. */
+export async function getAdminPasswordHash(): Promise<string | null> {
+  return getSetting(ADMIN_PASSWORD_HASH_KEY);
+}
+
+export async function setAdminPasswordHash(hash: string): Promise<void> {
+  await setSetting(ADMIN_PASSWORD_HASH_KEY, hash);
+}
