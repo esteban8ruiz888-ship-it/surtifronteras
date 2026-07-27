@@ -153,7 +153,10 @@ export async function getProducts(): Promise<Product[]> {
   if (!isDbConfigured()) return SEED_PRODUCTS;
   await ensureSchema();
   const sql = getSql();
-  const rows = (await sql`SELECT * FROM products ORDER BY id ASC`) as ProductRow[];
+  // Agrupa productos iguales/parecidos: por categoría, luego nombre y marca.
+  // Así un producto nuevo aparece junto a sus pares y no al final de todo.
+  const rows =
+    (await sql`SELECT * FROM products ORDER BY category ASC, name ASC, brand ASC, id ASC`) as ProductRow[];
   return rows.map(toProduct);
 }
 
