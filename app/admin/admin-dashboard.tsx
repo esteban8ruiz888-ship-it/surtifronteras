@@ -4,7 +4,7 @@ import { type Product } from "@/lib/store-data";
 import { logoutAction } from "./actions";
 import { AboutImageEditor } from "./about-image-editor";
 import { PresentationsEditor } from "./presentations-editor";
-import { ChangePassword } from "./change-password";
+import { AdminPasswordDrawer } from "./admin-password-drawer";
 import { AdminProductList } from "./admin-product-list";
 
 export function AdminDashboard({
@@ -36,7 +36,8 @@ export function AdminDashboard({
             <p className="text-[12.5px] text-muted">Surtifronteras</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <AdminPasswordDrawer />
           <Link
             href="/"
             className="rounded-full border border-warm-border bg-white px-4 py-2 text-[13px] font-semibold text-navy no-underline hover:border-navy"
@@ -66,7 +67,6 @@ export function AdminDashboard({
 
       <AboutImageEditor imageUrl={aboutImageUrl} />
       <PresentationsEditor initial={presentations} />
-      <ChangePassword />
 
       <AdminProductList products={products} />
     </div>
