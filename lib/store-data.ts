@@ -166,7 +166,11 @@ export function qtyStep(p: Product): number {
  */
 export function effectiveUnit(p: Product): string {
   if (p.soldByWeight) return "kg";
-  if (p.category === "confiteria") return "bulto";
+  if (p.category === "confiteria") {
+    // La presentación puede aclarar que ESTE producto se vende por caja
+    // (ej. "PALITOS (Caja)" junto a "PALITOS X BULTO"). Si no lo dice, bulto.
+    return p.presentation.trim().toLowerCase() === "caja" ? "caja" : "bulto";
+  }
   return p.unit || "caja";
 }
 
