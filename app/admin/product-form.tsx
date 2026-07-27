@@ -288,7 +288,7 @@ export function ProductForm({
             <span className="text-[13.5px] text-ink">
               Permitir <strong>media caja/bulto</strong>
               <span className="mt-0.5 block text-[12px] text-muted">
-                Confitería y cantidades por caja impares se venden solo completas, aunque esto esté tildado. No aplica si se vende por kilo (siempre admite fracciones).
+                Cantidades por caja impares se venden solo completas, aunque esto esté tildado. No aplica si se vende por kilo (siempre admite fracciones).
               </span>
             </span>
           </label>

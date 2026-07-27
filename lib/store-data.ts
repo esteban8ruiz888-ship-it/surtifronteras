@@ -144,13 +144,12 @@ export function qtyHint(qty: number, unit: string): string | null {
 // --- Políticas de venta ---
 /**
  * ¿Este producto se puede pedir por media caja/bulto?
- * Regla dura: confitería NO, cantidades por caja impares NO — salvo que se
- * venda por kilo (peso continuo, siempre admite fracciones). Además el admin
- * puede desactivarlo con `allowHalfBox` para cualquier producto.
+ * Si se vende por kilo, siempre sí (peso continuo). Si las unidades por caja
+ * son impares, nunca (no hay una mitad exacta). Para el resto —incluida
+ * confitería— manda el flag `allowHalfBox` que pone el admin por producto.
  */
 export function canBuyHalfBox(p: Product): boolean {
   if (p.soldByWeight) return true;
-  if (p.category === "confiteria") return false;
   if (p.unitsPerBox != null && p.unitsPerBox % 2 !== 0) return false;
   return p.allowHalfBox;
 }
