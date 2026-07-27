@@ -42,8 +42,7 @@ export function PresentationsEditor({ initial }: { initial: string[] }) {
   }
 
   return (
-    <div className="mb-5 rounded-[14px] border border-warm-border bg-white p-4">
-      <h2 className="font-heading mb-1 text-[16px] text-navy">Presentaciones</h2>
+    <div>
       <p className="mb-3 text-[12.5px] text-muted">
         Los tipos de envase que podés elegir al cargar un producto (Lata, Botella…).
       </p>

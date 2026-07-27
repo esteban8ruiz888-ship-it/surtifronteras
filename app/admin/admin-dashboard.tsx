@@ -4,7 +4,8 @@ import { type Product } from "@/lib/store-data";
 import { logoutAction } from "./actions";
 import { AboutImageEditor } from "./about-image-editor";
 import { PresentationsEditor } from "./presentations-editor";
-import { AdminPasswordDrawer } from "./admin-password-drawer";
+import { AdminDrawer } from "./admin-drawer";
+import { ChangePasswordForm } from "./change-password-form";
 import { AdminProductList } from "./admin-product-list";
 
 export function AdminDashboard({
@@ -37,7 +38,19 @@ export function AdminDashboard({
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <AdminPasswordDrawer />
+          <AdminDrawer label="Cambiar contraseña" title="Cambiar contraseña">
+            <p className="mb-4 text-[12.5px] leading-relaxed text-muted">
+              Poné la contraseña actual y elegí una nueva. El cambio es
+              inmediato: la próxima vez que entres, usá la nueva.
+            </p>
+            <ChangePasswordForm />
+          </AdminDrawer>
+          <AdminDrawer label="Foto «nosotros»" title="Foto de «Sobre nosotros»">
+            <AboutImageEditor imageUrl={aboutImageUrl} />
+          </AdminDrawer>
+          <AdminDrawer label="Presentaciones" title="Presentaciones">
+            <PresentationsEditor initial={presentations} />
+          </AdminDrawer>
           <Link
             href="/"
             className="rounded-full border border-warm-border bg-white px-4 py-2 text-[13px] font-semibold text-navy no-underline hover:border-navy"
@@ -64,9 +77,6 @@ export function AdminDashboard({
           que conectes Vercel Postgres y agregues las variables de entorno.
         </div>
       )}
-
-      <AboutImageEditor imageUrl={aboutImageUrl} />
-      <PresentationsEditor initial={presentations} />
 
       <AdminProductList products={products} />
     </div>

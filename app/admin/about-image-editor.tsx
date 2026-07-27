@@ -72,10 +72,11 @@ export function AboutImageEditor({
   }
 
   return (
-    <div className="mb-5 rounded-[14px] border border-warm-border bg-white p-4">
-      <h2 className="font-heading mb-3 text-[16px] text-navy">
-        Foto de &ldquo;Sobre nosotros&rdquo;
-      </h2>
+    <div>
+      <p className="mb-4 text-[12.5px] leading-relaxed text-muted">
+        La imagen que se ve en la sección &ldquo;Sobre nosotros&rdquo; de la
+        tienda.
+      </p>
       <div className="flex flex-wrap items-center gap-4">
         <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-[10px] border border-warm-border bg-slot">
           {preview ? (
