@@ -93,9 +93,9 @@ export function CartDrawer({
                   >
                     +
                   </button>
-                  {qtyHint(line.qty) && (
+                  {qtyHint(line.qty, line.unit) && (
                     <span className="text-[11px] italic text-muted">
-                      {qtyHint(line.qty)}
+                      {qtyHint(line.qty, line.unit)}
                     </span>
                   )}
                 </div>

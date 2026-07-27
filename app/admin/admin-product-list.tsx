@@ -7,6 +7,7 @@ import {
   AVAILABILITY_META,
   CATEGORIES,
   CATEGORY_COLOR,
+  effectiveUnit,
   formatPrice,
   matchesQuery,
   presentationLabel,
@@ -120,7 +121,7 @@ export function AdminProductList({ products }: { products: Product[] }) {
                     {p.name}
                   </div>
                   <div className="truncate text-[12.5px] text-muted">
-                    {presentationLabel(p) || p.unit}
+                    {presentationLabel(p) || effectiveUnit(p)}
                     {p.flavor ? ` · ${p.flavor}` : ""}
                   </div>
                 </div>

@@ -107,6 +107,7 @@ export type ProductFormInput = {
   milliliters: number | null;
   unitsPerBox: number | null;
   allowHalfBox: boolean;
+  soldByWeight: boolean;
   availability: string;
   featured: boolean;
   isNew: boolean;
@@ -153,6 +154,7 @@ export async function saveProduct(input: ProductFormInput): Promise<SaveResult> 
     milliliters: posIntOrNull(input.milliliters),
     unitsPerBox: posIntOrNull(input.unitsPerBox),
     allowHalfBox: Boolean(input.allowHalfBox),
+    soldByWeight: Boolean(input.soldByWeight),
     availability,
     featured: Boolean(input.featured),
     isNew: Boolean(input.isNew),

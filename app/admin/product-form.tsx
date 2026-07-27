@@ -68,6 +68,9 @@ export function ProductForm({
   const [allowHalfBox, setAllowHalfBox] = useState(
     product?.allowHalfBox ?? true,
   );
+  const [soldByWeight, setSoldByWeight] = useState(
+    product?.soldByWeight ?? false,
+  );
   const [availability, setAvailability] = useState<string>(
     product?.availability ?? "available",
   );
@@ -129,6 +132,7 @@ export function ProductForm({
         price: priceNum,
         unit: product?.unit ?? "",
         allowHalfBox,
+        soldByWeight,
         availability,
         featured,
         isNew,
@@ -253,7 +257,9 @@ export function ProductForm({
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className={labelCls} htmlFor="price">Precio por caja (COP)</label>
+            <label className={labelCls} htmlFor="price">
+              Precio {soldByWeight ? "por kilo" : "por caja/bulto"} (COP)
+            </label>
             <input id="price" type="number" step="1" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="45000" className={inputCls} required />
           </div>
           <div>
@@ -269,11 +275,20 @@ export function ProductForm({
         {/* Reglas de venta */}
         <div className="rounded-[12px] border border-warm-border bg-cream-soft p-4">
           <label className="flex cursor-pointer items-start gap-2.5">
-            <input type="checkbox" checked={allowHalfBox} onChange={(e) => setAllowHalfBox(e.target.checked)} className="mt-1 h-4 w-4 accent-navy" />
+            <input type="checkbox" checked={soldByWeight} onChange={(e) => setSoldByWeight(e.target.checked)} className="mt-1 h-4 w-4 accent-navy" />
             <span className="text-[13.5px] text-ink">
-              Permitir <strong>media caja</strong>
+              Se vende <strong>por kilo</strong> (a granel)
               <span className="mt-0.5 block text-[12px] text-muted">
-                Confitería y cantidades por caja impares se venden solo por caja completa, aunque esto esté tildado.
+                La cantidad se pide en kg (admite fracciones, ej. 1.5 kg) y el precio de arriba se entiende por kilo.
+              </span>
+            </span>
+          </label>
+          <label className="mt-3 flex cursor-pointer items-start gap-2.5">
+            <input type="checkbox" checked={allowHalfBox} onChange={(e) => setAllowHalfBox(e.target.checked)} disabled={soldByWeight} className="mt-1 h-4 w-4 accent-navy disabled:opacity-50" />
+            <span className="text-[13.5px] text-ink">
+              Permitir <strong>media caja/bulto</strong>
+              <span className="mt-0.5 block text-[12px] text-muted">
+                Confitería y cantidades por caja impares se venden solo completas, aunque esto esté tildado. No aplica si se vende por kilo (siempre admite fracciones).
               </span>
             </span>
           </label>

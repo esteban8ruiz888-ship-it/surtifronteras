@@ -84,6 +84,8 @@ export interface Product {
   unitsPerBox: number | null;
   /** Flag del admin: ¿se puede vender media caja? (además la política lo fuerza). */
   allowHalfBox: boolean;
+  /** Se vende por kilo (a granel) en vez de por caja/bulto/unidad. */
+  soldByWeight: boolean;
   availability: Availability;
   featured: boolean;
   isNew: boolean;
@@ -96,6 +98,7 @@ export interface CartLine {
   id: number;
   name: string;
   brand: string;
+  flavor: string;
   unit: string;
   presentationLabel: string;
   price: number;
@@ -126,23 +129,27 @@ export function formatQty(n: number): string {
 
 /**
  * Pista legible para cantidades fraccionarias, ej. "media caja" o
- * "2 cajas y media". Devuelve null cuando la cantidad es un número entero.
+ * "2 bultos y media". Devuelve null cuando la cantidad es entera, o cuando
+ * la unidad es "kg" (ahí el número solo, ej. "1.5", ya se entiende).
  */
-export function qtyHint(qty: number): string | null {
+export function qtyHint(qty: number, unit: string): string | null {
   if (Number.isInteger(qty)) return null;
+  if (unit === "kg") return null;
   const whole = Math.floor(qty);
   return whole === 0
-    ? "media caja"
-    : `${whole} caja${whole === 1 ? "" : "s"} y media`;
+    ? `media ${unit}`
+    : `${whole} ${unit}${whole === 1 ? "" : "s"} y media`;
 }
 
 // --- Políticas de venta ---
 /**
- * ¿Este producto se puede pedir por media caja?
- * Regla dura: confitería NO, cantidades por caja impares NO. Además el admin
+ * ¿Este producto se puede pedir por media caja/bulto?
+ * Regla dura: confitería NO, cantidades por caja impares NO — salvo que se
+ * venda por kilo (peso continuo, siempre admite fracciones). Además el admin
  * puede desactivarlo con `allowHalfBox` para cualquier producto.
  */
 export function canBuyHalfBox(p: Product): boolean {
+  if (p.soldByWeight) return true;
   if (p.category === "confiteria") return false;
   if (p.unitsPerBox != null && p.unitsPerBox % 2 !== 0) return false;
   return p.allowHalfBox;
@@ -151,6 +158,17 @@ export function canBuyHalfBox(p: Product): boolean {
 /** Paso del contador de cantidad: 0.5 si permite media caja, 1 si no. */
 export function qtyStep(p: Product): number {
   return canBuyHalfBox(p) ? 0.5 : 1;
+}
+
+/**
+ * Unidad de venta que se le muestra al cliente: "kg" si se vende por peso,
+ * "bulto" para confitería (no se vende en cajas de cartón), o la unidad
+ * guardada (por defecto "caja").
+ */
+export function effectiveUnit(p: Product): string {
+  if (p.soldByWeight) return "kg";
+  if (p.category === "confiteria") return "bulto";
+  return p.unit || "caja";
 }
 
 /** Etiqueta corta de presentación: "Lata · 350 ml", "Bolsa · 500 g", etc. */
@@ -222,7 +240,8 @@ export function cartLines(cart: Cart, products: Product[]): CartLine[] {
         id: p.id,
         name: p.name,
         brand: p.brand,
-        unit: p.unit,
+        flavor: p.flavor,
+        unit: effectiveUnit(p),
         presentationLabel: presentationLabel(p),
         price: p.price,
         qty,
@@ -242,6 +261,12 @@ export function cartDiscountTotal(cart: Cart, products: Product[]): number {
   return cartLines(cart, products).reduce((sum, l) => sum + l.discount, 0);
 }
 
+/** Pluraliza la unidad para el mensaje de pedido ("caja"→"cajas", "kg" no cambia). */
+function pluralUnit(qty: number, unit: string): string {
+  if (unit === "kg" || qty === 1) return unit;
+  return /[aeiouáéíóú]$/i.test(unit) ? `${unit}s` : `${unit}es`;
+}
+
 export function buildOrderMessage(
   cart: Cart,
   products: Product[],
@@ -252,19 +277,20 @@ export function buildOrderMessage(
   const totalDiscount = lines.reduce((sum, l) => sum + l.discount, 0);
 
   const body = [
-    `Hola ${businessName || "Surtifronteras"}, quiero hacer este pedido (venta al mayor) desde la página web:`,
+    `Hola, ${businessName || "Surtifronteras"}. Quiero realizar el siguiente pedido al por mayor desde la página web:`,
     "",
     ...lines.map((l) => {
-      const label = l.brand ? `${l.brand} ${l.name}` : l.name;
-      const pres = l.presentationLabel ? ` ${l.presentationLabel}` : "";
+      const pres = l.presentationLabel ? ` (${l.presentationLabel})` : "";
+      const flavorPart = l.flavor ? ` – ${l.flavor}` : "";
+      const unit = pluralUnit(l.qty, l.unit);
       const disc = l.discount > 0 ? ` (promo -${formatPrice(l.discount)})` : "";
-      return `• ${label}${pres} x${formatQty(l.qty)} — ${formatPrice(l.total)}${disc}`;
+      return `• ${l.name}${pres}${flavorPart}: ${formatQty(l.qty)} ${unit} — ${formatPrice(l.total)}${disc}`;
     }),
     "",
     ...(totalDiscount > 0
       ? [`Descuento por promociones: -${formatPrice(totalDiscount)}`]
       : []),
-    `Total: ${formatPrice(total)}`,
+    `Total del pedido: ${formatPrice(total)}`,
   ];
   return body.join("\n");
 }

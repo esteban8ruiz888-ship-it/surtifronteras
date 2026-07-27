@@ -1,6 +1,7 @@
 import Image from "next/image";
 import {
   AVAILABILITY_META,
+  effectiveUnit,
   formatPrice,
   formatQty,
   hasPromo,
@@ -33,7 +34,7 @@ export function ProductCard({
   const addable = product.availability === "available";
   const pres = presentationLabel(product);
   const meta = [pres, product.flavor].filter(Boolean).join(" · ");
-  const unitLabel = product.unit || "caja";
+  const unitLabel = effectiveUnit(product);
   // "caja de 24", pero "unidad" sola (sin "de N"); tampoco mostramos "de 0".
   const priceSuffix =
     unitLabel === "caja" && product.unitsPerBox != null && product.unitsPerBox > 0
@@ -112,8 +113,8 @@ export function ProductCard({
               >
                 +
               </button>
-              {qtyHint(qty) && (
-                <span className="text-[11px] italic text-muted">{qtyHint(qty)}</span>
+              {qtyHint(qty, unitLabel) && (
+                <span className="text-[11px] italic text-muted">{qtyHint(qty, unitLabel)}</span>
               )}
             </div>
             <button
