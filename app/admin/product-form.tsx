@@ -65,6 +65,7 @@ export function ProductForm({
     product?.unitsPerBox != null ? String(product.unitsPerBox) : "",
   );
   const [price, setPrice] = useState(product ? String(product.price) : "");
+  const [unit, setUnit] = useState(product?.unit || "caja");
   const [allowHalfBox, setAllowHalfBox] = useState(
     product?.allowHalfBox ?? true,
   );
@@ -130,7 +131,7 @@ export function ProductForm({
         milliliters: numOrNull(milliliters),
         unitsPerBox: numOrNull(unitsPerBox),
         price: priceNum,
-        unit: product?.unit ?? "",
+        unit,
         allowHalfBox,
         soldByWeight,
         availability,
@@ -255,10 +256,24 @@ export function ProductForm({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div>
+            <label className={labelCls} htmlFor="unit">Unidad de venta</label>
+            <select
+              id="unit"
+              value={unit}
+              onChange={(e) => setUnit(e.target.value)}
+              disabled={soldByWeight}
+              className={`${inputCls} disabled:opacity-50`}
+            >
+              <option value="caja">Caja</option>
+              <option value="bulto">Bulto</option>
+              <option value="unidad">Unidad</option>
+            </select>
+          </div>
           <div>
             <label className={labelCls} htmlFor="price">
-              Precio {soldByWeight ? "por kilo" : "por caja/bulto"} (COP)
+              Precio por {soldByWeight ? "kilo" : unit} (COP)
             </label>
             <input id="price" type="number" step="1" min="0" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="45000" className={inputCls} required />
           </div>
@@ -271,6 +286,12 @@ export function ProductForm({
             </select>
           </div>
         </div>
+        {soldByWeight && (
+          <p className="-mt-2 text-[12px] text-muted">
+            Este producto se vende por kilo (marcado abajo), así que la unidad de
+            venta no aplica.
+          </p>
+        )}
 
         {/* Reglas de venta */}
         <div className="rounded-[12px] border border-warm-border bg-cream-soft p-4">
