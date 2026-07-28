@@ -35,11 +35,15 @@ export function ProductCard({
   const pres = presentationLabel(product);
   const meta = [pres, product.flavor].filter(Boolean).join(" · ");
   const unitLabel = effectiveUnit(product);
-  // "caja de 24", pero "unidad" sola (sin "de N"); tampoco mostramos "de 0".
-  const priceSuffix =
-    unitLabel === "caja" && product.unitsPerBox != null && product.unitsPerBox > 0
-      ? `${unitLabel} de ${product.unitsPerBox}`
-      : unitLabel;
+  // "caja de 24" o "bulto de 12", pero "kg"/"unidad" solas (sin "de N");
+  // tampoco mostramos "de 0".
+  const showUnitsPerBox =
+    (unitLabel === "caja" || unitLabel === "bulto") &&
+    product.unitsPerBox != null &&
+    product.unitsPerBox > 0;
+  const priceSuffix = showUnitsPerBox
+    ? `${unitLabel} de ${product.unitsPerBox}`
+    : unitLabel;
 
   return (
     <div
