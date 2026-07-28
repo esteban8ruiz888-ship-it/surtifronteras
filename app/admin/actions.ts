@@ -171,6 +171,9 @@ export async function saveProduct(input: ProductFormInput): Promise<SaveResult> 
 
   revalidatePath("/");
   revalidatePath("/admin");
+  // "/admin" solo invalida esa página exacta, no cada /admin/[id]. Sin esto,
+  // volver a entrar a editar el mismo producto puede mostrar datos viejos.
+  revalidatePath("/admin/[id]", "page");
   return { ok: true };
 }
 
