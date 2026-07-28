@@ -7,11 +7,11 @@ import {
   AVAILABILITY_META,
   CATEGORIES,
   CATEGORY_COLOR,
-  effectiveUnit,
   formatPrice,
   matchesQuery,
   presentationLabel,
   productSearchText,
+  unitWithCount,
   type Product,
 } from "@/lib/store-data";
 import { DeleteButton } from "./delete-button";
@@ -121,8 +121,9 @@ export function AdminProductList({ products }: { products: Product[] }) {
                     {p.name}
                   </div>
                   <div className="truncate text-[12.5px] text-muted">
-                    {presentationLabel(p) || effectiveUnit(p)}
-                    {p.flavor ? ` · ${p.flavor}` : ""}
+                    {[presentationLabel(p), unitWithCount(p), p.flavor]
+                      .filter(Boolean)
+                      .join(" · ")}
                   </div>
                 </div>
               </div>

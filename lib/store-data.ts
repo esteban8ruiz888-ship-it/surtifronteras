@@ -174,6 +174,19 @@ export function effectiveUnit(p: Product): string {
   return p.unit || "caja";
 }
 
+/**
+ * Unidad con la cantidad por caja: "caja de 12", "bulto de 12". Para kg o
+ * unidad devuelve solo la etiqueta (no tiene sentido "de N"). Tampoco "de 0".
+ */
+export function unitWithCount(p: Product): string {
+  const unit = effectiveUnit(p);
+  const showCount =
+    (unit === "caja" || unit === "bulto") &&
+    p.unitsPerBox != null &&
+    p.unitsPerBox > 0;
+  return showCount ? `${unit} de ${p.unitsPerBox}` : unit;
+}
+
 /** Etiqueta corta de presentación: "Lata · 350 ml", "Bolsa · 500 g", etc. */
 export function presentationLabel(p: Product): string {
   const parts: string[] = [];
