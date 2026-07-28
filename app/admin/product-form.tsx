@@ -268,6 +268,9 @@ export function ProductForm({
             >
               <option value="caja">Caja</option>
               <option value="bulto">Bulto</option>
+              <option value="bandeja">Bandeja</option>
+              <option value="tira">Tira</option>
+              <option value="pieza">Pieza</option>
               <option value="unidad">Unidad</option>
             </select>
           </div>

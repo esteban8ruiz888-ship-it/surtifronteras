@@ -175,12 +175,14 @@ export function effectiveUnit(p: Product): string {
  * Unidad con la cantidad por caja: "caja de 12", "bulto de 12". Para kg o
  * unidad devuelve solo la etiqueta (no tiene sentido "de N"). Tampoco "de 0".
  */
+// Unidades que contienen varias piezas adentro → muestran "de N".
+// "pieza"/"unidad"/"kg" son una sola cosa, no llevan conteo.
+const UNITS_WITH_COUNT = new Set(["caja", "bulto", "bandeja", "tira"]);
+
 export function unitWithCount(p: Product): string {
   const unit = effectiveUnit(p);
   const showCount =
-    (unit === "caja" || unit === "bulto") &&
-    p.unitsPerBox != null &&
-    p.unitsPerBox > 0;
+    UNITS_WITH_COUNT.has(unit) && p.unitsPerBox != null && p.unitsPerBox > 0;
   return showCount ? `${unit} de ${p.unitsPerBox}` : unit;
 }
 
