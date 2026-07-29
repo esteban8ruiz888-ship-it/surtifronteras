@@ -196,22 +196,30 @@ export function presentationLabel(p: Product): string {
 }
 
 // --- Búsqueda ---
+/** Pasa a minúsculas y saca las tildes, para que la búsqueda las ignore. */
+function normalizeForSearch(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "");
+}
+
 export function productSearchText(p: Product, categoryLabel: string): string {
-  return [
-    p.name,
-    p.brand,
-    p.flavor,
-    p.presentation,
-    categoryLabel,
-    p.grams != null ? `${p.grams}g ${p.grams} gramos` : "",
-    p.milliliters != null ? `${p.milliliters}ml ${p.milliliters} mililitros` : "",
-  ]
-    .join(" ")
-    .toLowerCase();
+  return normalizeForSearch(
+    [
+      p.name,
+      p.brand,
+      p.flavor,
+      p.presentation,
+      categoryLabel,
+      p.grams != null ? `${p.grams}g ${p.grams} gramos` : "",
+      p.milliliters != null ? `${p.milliliters}ml ${p.milliliters} mililitros` : "",
+    ].join(" "),
+  );
 }
 
 export function matchesQuery(text: string, query: string): boolean {
-  const q = query.trim().toLowerCase();
+  const q = normalizeForSearch(query.trim());
   if (!q) return true;
   return q.split(/\s+/).every((term) => text.includes(term));
 }
@@ -295,11 +303,16 @@ export function buildOrderMessage(
     `Hola, ${businessName || "Surtifronteras"}. Quiero realizar el siguiente pedido al por mayor desde la página web:`,
     "",
     ...lines.map((l) => {
+      const label = l.brand ? `${l.brand} ${l.name}` : l.name;
       const pres = l.presentationLabel ? ` (${l.presentationLabel})` : "";
-      const flavorPart = l.flavor ? ` – ${l.flavor}` : "";
+      // No repetir el sabor si es igual a la marca (dato duplicado en algunos productos).
+      const flavorPart =
+        l.flavor && l.flavor.toLowerCase() !== l.brand.toLowerCase()
+          ? ` – ${l.flavor}`
+          : "";
       const unit = pluralUnit(l.qty, l.unit);
       const disc = l.discount > 0 ? ` (promo -${formatPrice(l.discount)})` : "";
-      return `• ${l.name}${pres}${flavorPart}: ${formatQty(l.qty)} ${unit} — ${formatPrice(l.total)}${disc}`;
+      return `• ${label}${pres}${flavorPart}: ${formatQty(l.qty)} ${unit} — ${formatPrice(l.total)}${disc}`;
     }),
     "",
     ...(totalDiscount > 0
