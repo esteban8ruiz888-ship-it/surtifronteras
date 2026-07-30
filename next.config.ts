@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    // Servimos las fotos directo desde Blob, sin el optimizador de Vercel.
+    // El optimizador tiene un cupo mensual y al superarlo devuelve HTTP 402
+    // (imagen rota en toda la tienda). Las fotos ya se suben en buen tamaño,
+    // así que no hace falta optimizarlas.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
