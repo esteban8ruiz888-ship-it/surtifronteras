@@ -37,7 +37,7 @@ async function toUploadableJpeg(
 }
 
 function numOrNull(s: string): number | null {
-  const t = s.trim();
+  const t = s.trim().replace(",", "."); // acepta coma decimal (ej. "1,5")
   if (t === "") return null;
   const n = Number(t);
   return Number.isFinite(n) ? n : null;
@@ -303,9 +303,8 @@ export function ProductForm({
             <div className="flex gap-2">
               <input
                 id="weight"
-                type="number"
-                min="0"
-                step="any"
+                type="text"
+                inputMode="decimal"
                 value={weightValue}
                 onChange={(e) => setWeightValue(e.target.value)}
                 placeholder="500"
@@ -322,10 +321,10 @@ export function ProductForm({
                   }
                   setWeightUnit(next);
                 }}
-                className={`${inputCls} w-[74px] px-2`}
+                className={`${inputCls} w-[78px] px-2`}
               >
-                <option value="g">g</option>
-                <option value="kg">kg</option>
+                <option value="g">GR</option>
+                <option value="kg">Kg</option>
               </select>
             </div>
           </div>
@@ -334,9 +333,8 @@ export function ProductForm({
             <div className="flex gap-2">
               <input
                 id="volume"
-                type="number"
-                min="0"
-                step="any"
+                type="text"
+                inputMode="decimal"
                 value={volumeValue}
                 onChange={(e) => setVolumeValue(e.target.value)}
                 placeholder="355"
@@ -353,7 +351,7 @@ export function ProductForm({
                   }
                   setVolumeUnit(next);
                 }}
-                className={`${inputCls} w-[74px] px-2`}
+                className={`${inputCls} w-[78px] px-2`}
               >
                 <option value="ml">ml</option>
                 <option value="l">L</option>

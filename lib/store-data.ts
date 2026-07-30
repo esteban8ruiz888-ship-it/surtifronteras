@@ -198,8 +198,8 @@ function trimNum(n: number): string {
 export function weightLabel(p: Product): string {
   if (p.grams == null) return "";
   return p.weightUnit === "kg"
-    ? `${trimNum(p.grams / 1000)} kg`
-    : `${trimNum(p.grams)} g`;
+    ? `${trimNum(p.grams / 1000)} Kg`
+    : `${trimNum(p.grams)} GR`;
 }
 
 /** Volumen legible según la unidad elegida: "355 ml" o "1.5 L". */
