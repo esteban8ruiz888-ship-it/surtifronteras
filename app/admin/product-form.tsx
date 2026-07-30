@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { upload } from "@vercel/blob/client";
 import { AVAILABILITY_META, CATEGORIES, type Product } from "@/lib/store-data";
 import { saveProduct } from "./actions";
 
@@ -12,21 +11,29 @@ const inputCls =
   "w-full rounded-[12px] border border-stepper bg-white px-4 py-3 text-[15px] text-ink outline-none focus:border-navy";
 const labelCls = "mb-1.5 block text-[13px] font-semibold text-ink";
 
-const EXTENSION_CONTENT_TYPE: Record<string, string> = {
-  jpg: "image/jpeg",
-  jpeg: "image/jpeg",
-  png: "image/png",
-  webp: "image/webp",
-  gif: "image/gif",
-  avif: "image/avif",
-  heic: "image/heic",
-  heif: "image/heif",
-};
-
-function resolveContentType(file: File): string {
-  if (file.type) return file.type;
-  const ext = file.name.split(".").pop()?.toLowerCase();
-  return (ext && EXTENSION_CONTENT_TYPE[ext]) || "application/octet-stream";
+// Reduce y convierte la imagen a JPEG en el navegador: queda liviana, se ve en
+// todos lados (arregla las fotos HEIC del iPhone) y entra en el límite de subida.
+async function toUploadableJpeg(
+  file: File,
+): Promise<{ blob: Blob; name: string }> {
+  const bitmap = await createImageBitmap(file);
+  const maxDim = 1600;
+  const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
+  const w = Math.max(1, Math.round(bitmap.width * scale));
+  const h = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("canvas no disponible");
+  ctx.drawImage(bitmap, 0, 0, w, h);
+  bitmap.close?.();
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, "image/jpeg", 0.85),
+  );
+  if (!blob) throw new Error("no se pudo convertir");
+  const base = file.name.replace(/\.[^.]+$/, "") || "producto";
+  return { blob, name: `${base}.jpg` };
 }
 
 function numOrNull(s: string): number | null {
@@ -93,12 +100,29 @@ export function ProductForm({
     setError(null);
     setUploading(true);
     try {
-      const blob = await upload(file.name, file, {
-        access: "public",
-        handleUploadUrl: "/api/admin/upload",
-        contentType: resolveContentType(file),
+      let payload: Blob = file;
+      let filename = file.name || "producto.jpg";
+      try {
+        const conv = await toUploadableJpeg(file);
+        payload = conv.blob;
+        filename = conv.name;
+      } catch {
+        // Si el navegador no puede procesar la imagen, subimos el archivo tal cual.
+      }
+      const form = new FormData();
+      form.append("file", payload, filename);
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: form,
       });
-      setImageUrl(blob.url);
+      const data = (await res.json().catch(() => ({}))) as {
+        url?: string;
+        error?: string;
+      };
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || `Error ${res.status}`);
+      }
+      setImageUrl(data.url);
     } catch (err) {
       setError("No se pudo subir la imagen: " + (err as Error).message);
     } finally {
