@@ -43,6 +43,22 @@ function numOrNull(s: string): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
+/** Muestra un número sin decimales inútiles: 1.5 -> "1.5", 1000 -> "1000". */
+function fmtNum(n: number): string {
+  return Number.isInteger(n) ? String(n) : String(Number(n.toFixed(3)));
+}
+
+/** Convierte el valor mostrado a la unidad base (g o ml): kg/L -> ×1000. */
+function toBaseValue(
+  value: string,
+  unit: string,
+  bigUnit: string,
+): number | null {
+  const n = numOrNull(value);
+  if (n == null || n < 0) return null;
+  return unit === bigUnit ? Math.round(n * 1000) : Math.round(n);
+}
+
 export function ProductForm({
   product,
   presentations,
@@ -62,11 +78,25 @@ export function ProductForm({
   );
   const [presentation, setPresentation] = useState(product?.presentation ?? "");
   const [flavor, setFlavor] = useState(product?.flavor ?? "");
-  const [grams, setGrams] = useState(
-    product?.grams != null ? String(product.grams) : "",
+  const [weightUnit, setWeightUnit] = useState(
+    product?.weightUnit === "kg" ? "kg" : "g",
   );
-  const [milliliters, setMilliliters] = useState(
-    product?.milliliters != null ? String(product.milliliters) : "",
+  const [weightValue, setWeightValue] = useState(
+    product?.grams != null
+      ? fmtNum(product.weightUnit === "kg" ? product.grams / 1000 : product.grams)
+      : "",
+  );
+  const [volumeUnit, setVolumeUnit] = useState(
+    product?.volumeUnit === "l" ? "l" : "ml",
+  );
+  const [volumeValue, setVolumeValue] = useState(
+    product?.milliliters != null
+      ? fmtNum(
+          product.volumeUnit === "l"
+            ? product.milliliters / 1000
+            : product.milliliters,
+        )
+      : "",
   );
   const [unitsPerBox, setUnitsPerBox] = useState(
     product?.unitsPerBox != null ? String(product.unitsPerBox) : "",
@@ -151,8 +181,10 @@ export function ProductForm({
         category,
         presentation,
         flavor,
-        grams: numOrNull(grams),
-        milliliters: numOrNull(milliliters),
+        grams: toBaseValue(weightValue, weightUnit, "kg"),
+        milliliters: toBaseValue(volumeValue, volumeUnit, "l"),
+        weightUnit,
+        volumeUnit,
         unitsPerBox: numOrNull(unitsPerBox),
         price: priceNum,
         unit,
@@ -267,12 +299,66 @@ export function ProductForm({
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <label className={labelCls} htmlFor="grams">Gramos</label>
-            <input id="grams" type="number" min="0" step="1" value={grams} onChange={(e) => setGrams(e.target.value)} placeholder="54" className={inputCls} />
+            <label className={labelCls} htmlFor="weight">Peso</label>
+            <div className="flex gap-2">
+              <input
+                id="weight"
+                type="number"
+                min="0"
+                step="any"
+                value={weightValue}
+                onChange={(e) => setWeightValue(e.target.value)}
+                placeholder="500"
+                className={`${inputCls} min-w-0 flex-1`}
+              />
+              <select
+                aria-label="Unidad de peso"
+                value={weightUnit}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  const n = numOrNull(weightValue);
+                  if (n != null && next !== weightUnit) {
+                    setWeightValue(fmtNum(next === "kg" ? n / 1000 : n * 1000));
+                  }
+                  setWeightUnit(next);
+                }}
+                className={`${inputCls} w-[74px] px-2`}
+              >
+                <option value="g">g</option>
+                <option value="kg">kg</option>
+              </select>
+            </div>
           </div>
           <div>
-            <label className={labelCls} htmlFor="ml">Mililitros</label>
-            <input id="ml" type="number" min="0" step="1" value={milliliters} onChange={(e) => setMilliliters(e.target.value)} placeholder="350" className={inputCls} />
+            <label className={labelCls} htmlFor="volume">Volumen</label>
+            <div className="flex gap-2">
+              <input
+                id="volume"
+                type="number"
+                min="0"
+                step="any"
+                value={volumeValue}
+                onChange={(e) => setVolumeValue(e.target.value)}
+                placeholder="355"
+                className={`${inputCls} min-w-0 flex-1`}
+              />
+              <select
+                aria-label="Unidad de volumen"
+                value={volumeUnit}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  const n = numOrNull(volumeValue);
+                  if (n != null && next !== volumeUnit) {
+                    setVolumeValue(fmtNum(next === "l" ? n / 1000 : n * 1000));
+                  }
+                  setVolumeUnit(next);
+                }}
+                className={`${inputCls} w-[74px] px-2`}
+              >
+                <option value="ml">ml</option>
+                <option value="l">L</option>
+              </select>
+            </div>
           </div>
           <div>
             <label className={labelCls} htmlFor="upb">Unidades por caja</label>

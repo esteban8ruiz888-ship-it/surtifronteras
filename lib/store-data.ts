@@ -81,6 +81,9 @@ export interface Product {
   presentation: string;
   grams: number | null;
   milliliters: number | null;
+  /** Cómo mostrar el peso/volumen: "g"/"kg" y "ml"/"l". Se guarda en base (g, ml). */
+  weightUnit: string;
+  volumeUnit: string;
   unitsPerBox: number | null;
   /** Flag del admin: ¿se puede vender media caja? (además la política lo fuerza). */
   allowHalfBox: boolean;
@@ -186,12 +189,35 @@ export function unitWithCount(p: Product): string {
   return showCount ? `${unit} de ${p.unitsPerBox}` : unit;
 }
 
-/** Etiqueta corta de presentación: "Lata · 350 ml", "Bolsa · 500 g", etc. */
+/** Formatea un número sin decimales inútiles: 1.5 -> "1.5", 1000 -> "1000". */
+function trimNum(n: number): string {
+  return Number.isInteger(n) ? String(n) : String(Number(n.toFixed(3)));
+}
+
+/** Peso legible según la unidad elegida: "500 g" o "1.5 kg". */
+export function weightLabel(p: Product): string {
+  if (p.grams == null) return "";
+  return p.weightUnit === "kg"
+    ? `${trimNum(p.grams / 1000)} kg`
+    : `${trimNum(p.grams)} g`;
+}
+
+/** Volumen legible según la unidad elegida: "355 ml" o "1.5 L". */
+export function volumeLabel(p: Product): string {
+  if (p.milliliters == null) return "";
+  return p.volumeUnit === "l"
+    ? `${trimNum(p.milliliters / 1000)} L`
+    : `${trimNum(p.milliliters)} ml`;
+}
+
+/** Etiqueta corta de presentación: "Lata · 350 ml", "Bolsa · 1.5 kg", etc. */
 export function presentationLabel(p: Product): string {
   const parts: string[] = [];
   if (p.presentation) parts.push(p.presentation);
-  if (p.milliliters != null) parts.push(`${p.milliliters} ml`);
-  else if (p.grams != null) parts.push(`${p.grams} g`);
+  const vol = volumeLabel(p);
+  const wei = weightLabel(p);
+  if (vol) parts.push(vol);
+  else if (wei) parts.push(wei);
   return parts.join(" · ");
 }
 
@@ -212,8 +238,10 @@ export function productSearchText(p: Product, categoryLabel: string): string {
       p.flavor,
       p.presentation,
       categoryLabel,
-      p.grams != null ? `${p.grams}g ${p.grams} gramos` : "",
-      p.milliliters != null ? `${p.milliliters}ml ${p.milliliters} mililitros` : "",
+      p.grams != null ? `${p.grams}g ${p.grams} gramos ${weightLabel(p)}` : "",
+      p.milliliters != null
+        ? `${p.milliliters}ml ${p.milliliters} mililitros ${volumeLabel(p)}`
+        : "",
     ].join(" "),
   );
 }

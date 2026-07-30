@@ -105,6 +105,8 @@ export type ProductFormInput = {
   presentation: string;
   grams: number | null;
   milliliters: number | null;
+  weightUnit: string;
+  volumeUnit: string;
   unitsPerBox: number | null;
   allowHalfBox: boolean;
   soldByWeight: boolean;
@@ -152,6 +154,8 @@ export async function saveProduct(input: ProductFormInput): Promise<SaveResult> 
     presentation: input.presentation.trim(),
     grams: posIntOrNull(input.grams),
     milliliters: posIntOrNull(input.milliliters),
+    weightUnit: input.weightUnit === "kg" ? "kg" : "g",
+    volumeUnit: input.volumeUnit === "l" ? "l" : "ml",
     unitsPerBox: posIntOrNull(input.unitsPerBox),
     allowHalfBox: Boolean(input.allowHalfBox),
     soldByWeight: Boolean(input.soldByWeight),

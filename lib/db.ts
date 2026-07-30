@@ -44,6 +44,8 @@ type ProductRow = {
   presentation: string | null;
   grams: string | number | null;
   milliliters: string | number | null;
+  weight_unit: string | null;
+  volume_unit: string | null;
   units_per_box: number | null;
   allow_half_box: boolean | null;
   sold_by_weight: boolean | null;
@@ -71,6 +73,8 @@ function toProduct(r: ProductRow): Product {
     presentation: r.presentation ?? "",
     grams: numOrNull(r.grams),
     milliliters: numOrNull(r.milliliters),
+    weightUnit: r.weight_unit ?? "g",
+    volumeUnit: r.volume_unit ?? "ml",
     unitsPerBox: r.units_per_box == null ? null : Number(r.units_per_box),
     allowHalfBox: r.allow_half_box ?? true,
     soldByWeight: r.sold_by_weight ?? false,
@@ -103,6 +107,8 @@ async function ensureSchema(): Promise<void> {
   await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS presentation TEXT DEFAULT ''`;
   await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS grams NUMERIC`;
   await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS milliliters NUMERIC`;
+  await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS weight_unit TEXT DEFAULT 'g'`;
+  await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS volume_unit TEXT DEFAULT 'ml'`;
   await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS units_per_box INTEGER`;
   await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS allow_half_box BOOLEAN DEFAULT true`;
   await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS sold_by_weight BOOLEAN DEFAULT false`;
@@ -142,6 +148,8 @@ export type ProductInput = {
   presentation: string;
   grams: number | null;
   milliliters: number | null;
+  weightUnit: string;
+  volumeUnit: string;
   unitsPerBox: number | null;
   allowHalfBox: boolean;
   soldByWeight: boolean;
@@ -178,12 +186,14 @@ export async function createProduct(input: ProductInput): Promise<void> {
   await sql`
     INSERT INTO products
       (name, category, price, unit, image_url, brand, flavor, presentation,
-       grams, milliliters, units_per_box, allow_half_box, sold_by_weight, availability,
+       grams, milliliters, weight_unit, volume_unit, units_per_box, allow_half_box,
+       sold_by_weight, availability,
        featured, is_new, promo_threshold, promo_discount)
     VALUES
       (${input.name}, ${input.category}, ${input.price}, ${input.unit}, ${input.imageUrl},
        ${input.brand}, ${input.flavor}, ${input.presentation},
-       ${input.grams}, ${input.milliliters}, ${input.unitsPerBox}, ${input.allowHalfBox},
+       ${input.grams}, ${input.milliliters}, ${input.weightUnit}, ${input.volumeUnit},
+       ${input.unitsPerBox}, ${input.allowHalfBox},
        ${input.soldByWeight}, ${input.availability}, ${input.featured}, ${input.isNew},
        ${input.promoThreshold}, ${input.promoDiscount})
   `;
@@ -204,6 +214,8 @@ export async function updateProduct(id: number, input: ProductInput): Promise<vo
       presentation = ${input.presentation},
       grams = ${input.grams},
       milliliters = ${input.milliliters},
+      weight_unit = ${input.weightUnit},
+      volume_unit = ${input.volumeUnit},
       units_per_box = ${input.unitsPerBox},
       allow_half_box = ${input.allowHalfBox},
       sold_by_weight = ${input.soldByWeight},
