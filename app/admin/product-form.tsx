@@ -10,6 +10,12 @@ import { saveProduct } from "./actions";
 const inputCls =
   "w-full rounded-[12px] border border-stepper bg-white px-4 py-3 text-[15px] text-ink outline-none focus:border-navy";
 const labelCls = "mb-1.5 block text-[13px] font-semibold text-ink";
+// Campo compuesto (valor + unidad): el input crece, el select es fijo. Sin
+// `w-full` para que no se pisen y aplasten el campo de la cantidad.
+const measureInputCls =
+  "min-w-0 flex-1 rounded-[12px] border border-stepper bg-white px-4 py-3 text-[15px] text-ink outline-none focus:border-navy";
+const unitSelectCls =
+  "w-[78px] shrink-0 rounded-[12px] border border-stepper bg-white px-2 py-3 text-[15px] text-ink outline-none focus:border-navy";
 
 // Reduce y convierte la imagen a JPEG en el navegador: queda liviana, se ve en
 // todos lados (arregla las fotos HEIC del iPhone) y entra en el límite de subida.
@@ -308,7 +314,7 @@ export function ProductForm({
                 value={weightValue}
                 onChange={(e) => setWeightValue(e.target.value)}
                 placeholder="500"
-                className={`${inputCls} min-w-0 flex-1`}
+                className={measureInputCls}
               />
               <select
                 aria-label="Unidad de peso"
@@ -321,7 +327,7 @@ export function ProductForm({
                   }
                   setWeightUnit(next);
                 }}
-                className={`${inputCls} w-[78px] px-2`}
+                className={unitSelectCls}
               >
                 <option value="g">GR</option>
                 <option value="kg">Kg</option>
@@ -338,7 +344,7 @@ export function ProductForm({
                 value={volumeValue}
                 onChange={(e) => setVolumeValue(e.target.value)}
                 placeholder="355"
-                className={`${inputCls} min-w-0 flex-1`}
+                className={measureInputCls}
               />
               <select
                 aria-label="Unidad de volumen"
@@ -351,7 +357,7 @@ export function ProductForm({
                   }
                   setVolumeUnit(next);
                 }}
-                className={`${inputCls} w-[78px] px-2`}
+                className={unitSelectCls}
               >
                 <option value="ml">ml</option>
                 <option value="l">L</option>
