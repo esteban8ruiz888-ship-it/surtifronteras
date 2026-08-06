@@ -28,7 +28,7 @@ export function AboutSection({ imageUrl }: { imageUrl: string | null }) {
           {imageUrl ? (
             <Image
               src={imageUrl}
-              alt="Surtifronteras"
+              alt="VENCOL"
               fill
               sizes="(max-width: 768px) 100vw, 540px"
               className="object-cover"

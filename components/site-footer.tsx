@@ -8,14 +8,14 @@ export function SiteFooter() {
         <div>
           <div className="mb-[10px] flex items-center gap-[10px]">
             <Image
-              src="/logo-surtifronteras.png"
+              src="/logo.png"
               alt=""
               width={34}
               height={34}
               className="h-[34px] w-[34px] object-contain"
             />
             <span className="font-heading text-[17px] font-bold text-white">
-              Surtifronteras
+              VENCOL
             </span>
           </div>
           <p className="text-[13.5px] leading-[1.6] text-[#c3cce8]">
@@ -76,7 +76,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="mx-auto mt-7 max-w-[1080px] border-t border-white/15 pt-[18px] text-[12.5px] text-[#9facd6]">
-        © 2026 Surtifronteras. Pedidos coordinados por WhatsApp.
+        © 2026 VENCOL. Pedidos coordinados por WhatsApp.
       </div>
     </footer>
   );

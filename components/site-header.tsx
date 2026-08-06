@@ -12,8 +12,8 @@ export function SiteHeader({
     <header className="sticky top-0 z-50 flex items-center justify-between gap-2 border-b border-warm-border bg-white px-4 py-[14px] shadow-[0_2px_10px_rgba(10,42,120,0.05)] sm:gap-4 sm:px-6">
       <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <Image
-          src="/logo-surtifronteras.png"
-          alt="Surtifronteras"
+          src="/logo.png"
+          alt="VENCOL"
           width={46}
           height={46}
           priority
@@ -21,7 +21,7 @@ export function SiteHeader({
         />
         <div className="flex min-w-0 flex-col leading-[1.05]">
           <span className="font-heading truncate text-[18px] font-bold text-navy sm:text-[20px]">
-            Surtifronteras
+            VENCOL
           </span>
           <span className="truncate text-[11px] font-semibold uppercase tracking-[0.06em] text-gold">
             Sabor de casa
