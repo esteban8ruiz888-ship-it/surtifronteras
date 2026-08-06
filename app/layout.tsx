@@ -15,7 +15,7 @@ const mulish = Mulish({
 });
 
 export const metadata: Metadata = {
-  title: "VENCOL — Sabor de casa",
+  title: "Surtifronteras — Sabor de casa",
   description:
     "Productos venezolanos que saben a casa: víveres, confitería, licores y más. Arma tu pedido y lo coordinamos por WhatsApp.",
 };

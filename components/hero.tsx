@@ -4,7 +4,7 @@ export function Hero({ onScrollToCatalog }: { onScrollToCatalog: () => void }) {
   return (
     <section className="relative overflow-hidden bg-navy px-5 pb-16 pt-12 text-center sm:px-6 sm:pb-[84px] sm:pt-16">
       <Image
-        src="/logo.png"
+        src="/logo-surtifronteras.png"
         alt=""
         width={280}
         height={280}

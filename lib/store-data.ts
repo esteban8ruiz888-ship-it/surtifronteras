@@ -1,6 +1,6 @@
-// Datos de productos + helpers de catálogo/carrito/WhatsApp para VENCOL.
+// Datos de productos + helpers de catálogo/carrito/WhatsApp para Surtifronteras.
 
-export const BUSINESS_NAME = "VENCOL";
+export const BUSINESS_NAME = "Surtifronteras";
 
 export type WhatsAppDestinationId = "co" | "ve";
 
@@ -17,11 +17,11 @@ export interface WhatsAppDestination {
 // Número que recibe los pedidos.
 export const WHATSAPP_DESTINATIONS: WhatsAppDestination[] = [
   {
-    id: "co",
-    label: "Colombia",
-    number: "573147995039",
-    displayNumber: "+57 314 7995039",
-    flag: "🇨🇴",
+    id: "ve",
+    label: "Venezuela",
+    number: "584247133168",
+    displayNumber: "+58 424-7133168",
+    flag: "🇻🇪",
   },
 ];
 
@@ -47,15 +47,14 @@ export const CATEGORIES: Category[] = [
   { id: "varios", label: "Varios" },
 ];
 
-// Tonos de la marca VENCOL (tomados del logo), rotados por categoría para el
-// color del tag: verde → rojo → dorado → azul bandera → (vuelve al verde).
+// Tonos de la marca (tomados del logo), rotados por categoría para el color del tag.
 export const CATEGORY_COLOR: Record<CategoryId, string> = {
-  viveres: "#1B8A3A", // verde
-  confiteria: "#CF1124", // rojo
-  licores: "#D4AF37", // dorado
-  bebidas: "#0A3DA5", // azul bandera
-  charcuteria: "#1B8A3A", // verde
-  varios: "#CF1124", // rojo
+  viveres: "#0A2A78",
+  confiteria: "#CC1830",
+  licores: "#B8901A",
+  bebidas: "#0A2A78",
+  charcuteria: "#CC1830",
+  varios: "#B8901A",
 };
 
 // --- Disponibilidad (3 estados) ---
@@ -66,8 +65,8 @@ export const AVAILABILITY_META: Record<
   { label: string; emoji: string; color: string }
 > = {
   available: { label: "Disponible", emoji: "🟢", color: "#2FA84F" },
-  coming_soon: { label: "Próximamente", emoji: "🟡", color: "#D4AF37" },
-  out_of_stock: { label: "Agotado temporalmente", emoji: "🔴", color: "#CF1124" },
+  coming_soon: { label: "Próximamente", emoji: "🟡", color: "#B8901A" },
+  out_of_stock: { label: "Agotado temporalmente", emoji: "🔴", color: "#CC1830" },
 };
 
 export interface Product {
@@ -329,7 +328,7 @@ export function buildOrderMessage(
   const totalDiscount = lines.reduce((sum, l) => sum + l.discount, 0);
 
   const body = [
-    `Hola, ${businessName || "VENCOL"}. Quiero realizar el siguiente pedido al por mayor desde la página web:`,
+    `Hola, ${businessName || "Surtifronteras"}. Quiero realizar el siguiente pedido al por mayor desde la página web:`,
     "",
     ...lines.map((l) => {
       const label = l.brand ? `${l.brand} ${l.name}` : l.name;

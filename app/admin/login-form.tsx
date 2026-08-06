@@ -17,8 +17,8 @@ export function LoginForm({ configured }: { configured: boolean }) {
       <div className="w-full max-w-sm rounded-[20px] border border-warm-border bg-white p-7 shadow-[0_10px_30px_rgba(10,42,120,0.08)]">
         <div className="mb-6 flex flex-col items-center gap-3 text-center">
           <Image
-            src="/logo.png"
-            alt="VENCOL"
+            src="/logo-surtifronteras.png"
+            alt="Surtifronteras"
             width={56}
             height={56}
             className="h-14 w-14 object-contain"
@@ -27,7 +27,7 @@ export function LoginForm({ configured }: { configured: boolean }) {
             <h1 className="font-heading text-[22px] font-bold text-navy">
               {mode === "login" ? "Panel de administración" : "Cambiar contraseña"}
             </h1>
-            <p className="text-[13px] text-muted">VENCOL</p>
+            <p className="text-[13px] text-muted">Surtifronteras</p>
           </div>
         </div>
 

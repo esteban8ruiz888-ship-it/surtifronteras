@@ -1,26 +1,21 @@
 @import "tailwindcss";
 
-/* Design tokens — paleta de marca VENCOL.RG (verde · rojo · dorado · azul bandera).
-   Nota: el token histórico `navy` conserva su NOMBRE pero ahora es el VERDE
-   primario de la marca. Es el rol "color principal" que antes ocupaba el azul
-   marino; al remapear el valor, todas las clases `bg-navy`/`text-navy` del sitio
-   pasan a verde sin tocar los componentes. */
+/* Design tokens — pulled straight from StoreA.dc.html ("Cálido Clásico") */
 @theme {
-  --color-navy: #1b8a3a; /* PRIMARIO de marca = verde VENCOL (rol, no color literal) */
-  --color-brand-red: #cf1124; /* acento · precios · alertas */
-  --color-brand-yellow: #d4af37; /* badges premium (dorado) */
-  --color-gold: #d4af37; /* detalle dorado */
-  --color-flag-blue: #0a3da5; /* azul bandera (categorías) */
-  --color-cream: #f7f3ea; /* fondo suave */
-  --color-cream-soft: #fffdf7;
-  --color-warm-border: #eae3d3;
-  --color-line: #efe8d8;
-  --color-slot: #efe8d8;
-  --color-stepper: #d9cfb5;
-  --color-ink: #1f2a22; /* texto principal: casi negro con leve verde */
-  --color-muted: #6f7268; /* texto secundario neutro cálido */
+  --color-navy: #0a2a78;
+  --color-brand-red: #cc1830;
+  --color-brand-yellow: #fccc30;
+  --color-gold: #b8901a;
+  --color-cream: #fbf6ec;
+  --color-cream-soft: #fff9ec;
+  --color-warm-border: #eee3cd;
+  --color-line: #f3ecdc;
+  --color-slot: #f3ecdc;
+  --color-stepper: #ddd2b8;
+  --color-ink: #1b2340;
+  --color-muted: #7a7160;
   --color-whatsapp: #25d366;
-  --color-added: #2fa84f; /* verde "agregado al carrito" */
+  --color-added: #2fa84f;
 }
 
 /* next/font vars (defined on <html>) exposed as Tailwind font utilities */
@@ -39,9 +34,9 @@
   }
 
   a {
-    color: #1b8a3a;
+    color: #0a2a78;
   }
   a:hover {
-    color: #cf1124;
+    color: #cc1830;
   }
 }
